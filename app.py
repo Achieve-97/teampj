@@ -136,6 +136,32 @@ def js_delete_review():
     db.jisub.delete_one({'name': name_receive})
     return jsonify({'msg': '삭제 완료!'})
 
+# <----- 팀 방명록 ----->
+@app.route("/indexpost", methods=["POST"])
+def index_post():
+    name_receive = request.form["name_give"]
+    review_receive = request.form['review_give']
+
+    doc = {
+        'name': name_receive,
+        'review': review_receive
+    }
+
+    db.home.insert_one(doc)
+    return jsonify({'msg': '방명록 작성 완료!'})
+
+
+@app.route("/indexpost", methods=["GET"])
+def index_get():
+    review_list = list(db.home.find({}, {'_id': False}))
+    return jsonify({'reviews': review_list})
+
+@app.route('/indexpost/delete', methods=['POST'])
+def index_delete_review():
+    name_receive = request.form['name_give']
+    db.home.delete_one({'name': name_receive})
+    return jsonify({'msg': '삭제 완료!'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

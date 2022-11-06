@@ -214,6 +214,21 @@
             }
         }
 
+        function updateReview() {
+            let name = $('#name').val()
+            let review = $('#review').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/sjpost/update',
+                data: {name_give: name, review_give: review},
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload()
+                }
+            });
+        }
+
 
     </script>
 </head>
@@ -258,13 +273,14 @@
             <p class="title">방명록을 남겨주세요!</p>
             <div class="input-group mb-3">
                 <span class="input-group-text">이름</span>
-                <input type="text" id="name" class="form-control"></input>
+                <input type="text" id="name" class="form-control">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">방명록</span>
                 <textarea id="review" class="form-control"></textarea>
             </div>
             <button onclick="save()" type="button" class="btn mybtn">방명록 남기기</button>
+            <button type="button" onclick="updateReview()" class="btn btn-secondary btn-sm">수정</button>
             <hr style="color: #452f10; width: 100%;">
             <div class="input-group mb-3">
                 <table class="table table-striped" id="review_box">

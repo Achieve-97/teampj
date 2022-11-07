@@ -3,12 +3,8 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-import certifi
 
-ca = certifi.where()
-
-client = MongoClient('mongodb+srv://test:sparta@cluster0.5hwkona.mongodb.net/Cluster0?retryWrites=true&w=majority',
-                     tlsCAFile=ca)
+client = MongoClient('mongodb+srv://test:sparta@cluster0.5hwkona.mongodb.net/Cluster0?retryWrites=true&w=majority' )
 db = client.dbsparta
 
 
@@ -112,6 +108,14 @@ def sj_delete_review():
     db.seongjae.delete_one({'name': name_receive})
     return jsonify({'msg': '삭제 완료!'})
 
+@app.route('/sjpost/update', methods=['POST'])
+def sj_update_review():
+    name_receive = request.form['name_give']
+    review_receive = request.form['review_give']
+
+    db.seongjae.update_one({'name':name_receive},{'$set':{'review': review_receive}})
+    return jsonify({'msg': '수정 완료!'})
+
 # <----- 이지섭 방명록 ----->
 @app.route("/jspost", methods=["POST"])
 def jisub_post():
@@ -134,32 +138,6 @@ def jisub_get():
 def js_delete_review():
     name_receive = request.form['name_give']
     db.jisub.delete_one({'name': name_receive})
-    return jsonify({'msg': '삭제 완료!'})
-
-# <----- 팀 방명록 ----->
-@app.route("/indexpost", methods=["POST"])
-def index_post():
-    name_receive = request.form["name_give"]
-    review_receive = request.form['review_give']
-
-    doc = {
-        'name': name_receive,
-        'review': review_receive
-    }
-
-    db.home.insert_one(doc)
-    return jsonify({'msg': '방명록 작성 완료!'})
-
-
-@app.route("/indexpost", methods=["GET"])
-def index_get():
-    review_list = list(db.home.find({}, {'_id': False}))
-    return jsonify({'reviews': review_list})
-
-@app.route('/indexpost/delete', methods=['POST'])
-def index_delete_review():
-    name_receive = request.form['name_give']
-    db.home.delete_one({'name': name_receive})
     return jsonify({'msg': '삭제 완료!'})
 
 
